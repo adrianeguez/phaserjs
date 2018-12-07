@@ -1,3 +1,4 @@
+
 declare var ActiveXObject: any;
 
 declare type CallCallback = (item: Phaser.GameObjects.GameObject) => void;
