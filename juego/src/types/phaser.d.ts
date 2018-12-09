@@ -1,4 +1,5 @@
 
+
 declare var ActiveXObject: any;
 
 declare type CallCallback = (item: Phaser.GameObjects.GameObject) => void;
@@ -9806,7 +9807,7 @@ declare namespace Phaser {
      * The parsed XML object is returned, or `null` if there was an error while parsing the data.
      * @param data The XML source stored in a string.
      */
-    function ParseXML(data: string): DOMParser | ActiveXObject;
+    function ParseXML(data: string): DOMParser | any;
 
     /**
      * Attempts to remove the element from its parentNode in the DOM.
@@ -16275,7 +16276,7 @@ declare namespace Phaser {
        * @param texture The key of the Texture this Game Object will use to render with, as stored in the Texture Manager.
        * @param frame An optional frame from the Texture this Game Object is rendering with.
        */
-      sprite(x: number, y: number, texture: string, frame?: string | integer): Phaser.GameObjects.Sprite;
+      œsprite(x: number, y: number, texture: string, frame?: string | integer): Phaser.GameObjects.Sprite;
 
       /**
        * Creates a new Text Game Object and adds it to the Scene.
