@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import CursorKeys = Phaser.Input.Keyboard.CursorKeys;
 
 
 // @ts-ignore
@@ -20,14 +21,35 @@ export class AppComponent implements OnInit {
     {
       tipo: 'tileset',
       nombre: 'tileset',
-      nombreMapaCSV: 'tileset',
-      url: 'assets/t1.png',
+      nombreLayer: 'mapaLayer',
+      nombreMapa: 'mapa',
+      url: 'assets/mundos/t1.png',
+      urlNombreArchivo: 't1',
       posX: 0,
       posY: 0,
       sizeX: 16,
       sizeY: 16,
       index: 0,
-      levelCSV: 'assets/mundos/01.csv',
+      // levelCSV: 'assets/mundos/01.csv',
+      levelJSON: 'assets/mundos/01.json',
+      layerPositions: [
+        {
+          nombre: 'Frente',
+          posX: 0,
+          posY: 0,
+        },
+        {
+          nombre: 'Mundo',
+          posX: 0,
+          posY: 0,
+        }, {
+          nombre: 'Fondo',
+          posX: 0,
+          posY: 0,
+        },
+
+      ]
+
       // level: [
       //   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11],
       //   [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
@@ -43,11 +65,47 @@ export class AppComponent implements OnInit {
       posY: 200
     },
     {
-      tipo: 'imagen',
+      tipo: 'player',
       nombre: 'dude',
       url: 'assets/dude.png',
-      posX: 0,
-      posY: 100
+      posX: 100,
+      posY: 100,
+      frameWidth: 32,
+      frameHeight: 48,
+      bounce: 0.2,
+      collideWorldBounds: true,
+      animaciones: [
+        {
+          key: 'right',
+          frames: (scene: Phaser.Game, imagen: AnadirImagenInterface) => {
+            return scene.anims.generateFrameNumbers(imagen.nombre,
+              {
+                start: 5,
+                end: 8
+              })
+          },
+          frameRate: 10,
+          repeat: -1
+        },
+        {
+          key: 'left',
+          frames: (scene: Phaser.Game, imagen: AnadirImagenInterface) => {
+            return scene.anims.generateFrameNumbers(imagen.nombre,
+              {
+                start: 0,
+                end: 3
+              })
+          },
+          frameRate: 10,
+          repeat: -1
+        },
+        {
+          key: 'turn',
+          frames: () => [{key: 'dude', frame: 4}],
+          frameRate: 20,
+        },
+
+      ]
     }
   ];
   config = {
@@ -100,15 +158,16 @@ export class AppComponent implements OnInit {
 
 function preload(componente: AppComponent) {
   return function () {
-    const scene: Phaser.Scene = this;
+    const scene: Phaser.Scene | any = this;
     anadirImagenes(componente.imagenes, scene);
-
+    scene.customObjects = {};
+    scene.customObjects.layer = [];
 
     // // contexto.load.setBaseURL('http://labs.phaser.io');
 
     // Anadir imagenes en memoria
 
-    scene.load.image('tileset', 'assets/t1.png');
+    // scene.load.image('tileset', 'assets/t1.png');
     // scene.load.image('ground', 'assets/platform.png');
     // scene.add.a('flecha', 'https://image.flaticon.com/icons/svg/31/31931.svg').set;
     // scene.load.spritesheet('dude', 'assets/dude.png', {frameWidth: 32, frameHeight: 48});
@@ -120,10 +179,14 @@ function preload(componente: AppComponent) {
 
 function create(componente: AppComponent) {
   return function () {
-    const scene: Phaser.Scene | any = this;
+    const scene: Phaser.Scene | any | CustomObjects = this;
     anadirImagenes(componente.imagenes, scene, 'add');
-    console.log(scene);
-
+    scene.customObjects.cursors = scene.input.keyboard.createCursorKeys();
+    console.log(scene.customObjects.layer)
+    const mundo = scene.customObjects.layer.find((l) => l.nombre === 'Mundo');
+    console.log(mundo);
+    scene.physics.add.collider(scene.customObjects.player, mundo.layer);
+    // scene.physics.add.collider(scene.customObjects.player, scene.customObjects.layer.find((l) => l.name === 'mapa'));
     // establecerBackground(scene);
     // const platforms = crearPlatform(scene);
     // const player: Phaser.Physics.Arcade.Sprite = anadirPlayer(scene);
@@ -148,74 +211,102 @@ function create(componente: AppComponent) {
 }
 
 function update(componente: AppComponent) {
-  // return function () {
-  //   const scene: Phaser.Scene | any = this;
-  //   const cursors = this.input.keyboard.createCursorKeys();
-  //   const player: Phaser.Physics.Arcade.Sprite = scene.player;
-  //   scene.input.on(
-  //     'pointerdown',
-  //     function () {
-  //       player.setVelocityX(-160);
-  //       player.anims.play('left', true);
-  //       console.log('down')
-  //     }, this
-  //   );
-  //   scene.player.on('pointerdown', function(pointer, localX, localY, event){
-  //     console.log('abajo')
-  //   });
+  return function () {
+    const scene: Phaser.Scene | any | CustomObjects = this;
 
-  // gameObject.on('pointerup', function(pointer, localX, localY, event){
-  //   console.log('up')
-  // });
-  // gameObject.on('pointermove', function(pointer, localX, localY, event){
-  //   console.log('move')
-  // });
-  // gameObject.on('pointerover', function(pointer, localX, localY, event){
-  //   console.log('over')
-  // });
-  // scene.input.on(
-  //   'pointerup',
-  //   function () {
-  //     player.setVelocityX(-160);
-  //     player.anims.play('left', true);
-  //     console.log('up')
-  //   }, this
-  // );
-  //
-  //
-  // if (cursors.left.isDown) {
-  //   player.setVelocityX(-160);
-  //
-  //   player.anims.play('left', true);
-  // }
-  // else if (cursors.right.isDown) {
-  //   player.setVelocityX(160);
-  //
-  //   player.anims.play('right', true);
-  // }
-  // else {
-  //   player.setVelocityX(0);
-  //
-  //   player.anims.play('turn');
-  // }
-  //
-  // if (cursors.up.isDown && player.body.touching.down) {
-  //   player.setVelocityY(-330);
-  // }
-  // }
+    if (scene.customObjects.cursors.left.isDown) {
+      scene.customObjects.player.setVelocityX(-100);
+      scene.customObjects.player.anims.play('left', true);
+    } else if (scene.customObjects.cursors.right.isDown) {
+      scene.customObjects.player.setVelocityX(100);
+
+      scene.customObjects.player.anims.play('right', true);
+    } else {
+      scene.customObjects.player.setVelocityX(0);
+      scene.customObjects.player.anims.play('turn');
+    }
+  console.log(scene.customObjects.player);
+    if (scene.customObjects.cursors.up.isDown  && scene.customObjects.player.body.blocked.down) {
+      scene.customObjects.player.setVelocityY(-100);
+    }
+    //   const cursors = this.input.keyboard.createCursorKeys();
+    //   const player: Phaser.Physics.Arcade.Sprite = scene.player;
+    //   scene.input.on(
+    //     'pointerdown',
+    //     function () {
+    //       player.setVelocityX(-160);
+    //       player.anims.play('left', true);
+    //       console.log('down')
+    //     }, this
+    //   );
+    //   scene.player.on('pointerdown', function(pointer, localX, localY, event){
+    //     console.log('abajo')
+    //   });
+
+    // gameObject.on('pointerup', function(pointer, localX, localY, event){
+    //   console.log('up')
+    // });
+    // gameObject.on('pointermove', function(pointer, localX, localY, event){
+    //   console.log('move')
+    // });
+    // gameObject.on('pointerover', function(pointer, localX, localY, event){
+    //   console.log('over')
+    // });
+    // scene.input.on(
+    //   'pointerup',
+    //   function () {
+    //     player.setVelocityX(-160);
+    //     player.anims.play('left', true);
+    //     console.log('up')
+    //   }, this
+    // );
+    //
+    //
+    // if (cursors.left.isDown) {
+    //   player.setVelocityX(-160);
+    //
+    //   player.anims.play('left', true);
+    // }
+    // else if (cursors.right.isDown) {
+    //   player.setVelocityX(160);
+    //
+    //   player.anims.play('right', true);
+    // }
+    // else {
+    //   player.setVelocityX(0);
+    //
+    //   player.anims.play('turn');
+    // }
+    //
+    // if (cursors.up.isDown && player.body.touching.down) {
+    //   player.setVelocityY(-330);
+    // }
+  }
 
 }
 
-function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene, tipo: 'load' | 'add' = 'load') {
+function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene | any | CustomObjects, tipo: 'load' | 'add' = 'load') {
 
   if (tipo === 'load') {
     imagenes
       .forEach(
         (imagen) => {
-          scene.load.image(imagen.nombre, imagen.url);
-          if (imagen.levelCSV) {
-            scene.load.tilemapCSV(imagen.nombreMapaCSV, imagen.levelCSV);
+          if (imagen.tipo === 'imagen' || imagen.tipo === 'tileset') {
+            scene.load.image(imagen.nombre, imagen.url);
+            if (imagen.levelCSV) {
+              scene.load.tilemapCSV(imagen.nombreMapa, imagen.levelJSON);
+            }
+            if (imagen.levelJSON) {
+              scene.load.tilemapTiledJSON(imagen.nombreMapa, imagen.levelJSON);
+            }
           }
+          if (imagen.tipo === 'player') {
+            scene.load.spritesheet(imagen.nombre, imagen.url, {
+              frameWidth: imagen.frameWidth,
+              frameHeight: imagen.frameHeight
+            });
+          }
+
         }
       );
   }
@@ -227,20 +318,68 @@ function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene, 
             scene.add.image(imagen.posX, imagen.posY, imagen.nombre);
           }
           if (imagen.tipo === 'tileset') {
-            const configTileMap: TilemapConfig = {
-              tileWidth: imagen.sizeX,
-              tileHeight: imagen.sizeY,
-            };
+            const configTileMap: TilemapConfig = {};
             if (imagen.level) {
               configTileMap.data = imagen.level;
+              configTileMap.tileWidth = imagen.sizeX;
+              configTileMap.tileHeight = imagen.sizeY;
             }
             if (imagen.levelCSV) {
-              configTileMap.key = imagen.nombreMapaCSV
+              configTileMap.tileWidth = imagen.sizeX;
+              configTileMap.tileHeight = imagen.sizeY;
+              configTileMap.key = imagen.nombreMapa
             }
-            const map = scene.make.tilemap(configTileMap);
-            const tiles = map.addTilesetImage(imagen.nombre);
-            const layer = map.createStaticLayer(imagen.index, tiles, imagen.posX, imagen.posY);
+            if (imagen.levelJSON) {
+              configTileMap.key = imagen.nombreMapa;
+              console.log('configTileMap', configTileMap);
+            }
+            // const tileset = map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
+            //
+            // // Parameters: layer name (or index) from Tiled, tileset, x, y
+            // const belowLayer = map.createStaticLayer("Below Player", tileset, 0, 0);
+            // const worldLayer = map.createStaticLayer("World", tileset, 0, 0);
+            // const aboveLayer = map.createStaticLayer("Above Player", tileset, 0, 0);
 
+            const map = scene.make.tilemap(configTileMap);
+            if (imagen.levelJSON) {
+              const tileset = map.addTilesetImage(imagen.urlNombreArchivo, imagen.nombre);
+              imagen.layerPositions
+                .forEach(
+                  (layer) => {
+                    const layerObjeto = map.createStaticLayer(layer.nombre, tileset, layer.posX, layer.posY);
+                    layerObjeto.setCollisionByProperty({collides: true});
+                    scene.customObjects.layer.push({
+                      nombre: layer.nombre,
+                      layer: layerObjeto
+                    });
+                  }
+                );
+            } else {
+              const tiles = map.addTilesetImage(imagen.nombre);
+              const layer = map.createStaticLayer(imagen.index, tiles, imagen.posX, imagen.posY);
+              scene.customObjects.layer.push({
+                nombre: imagen.nombreLayer,
+                layer: layer
+              });
+            }
+
+          }
+          if (imagen.tipo === 'player') {
+            scene.customObjects.player = scene.physics.add.sprite(imagen.posX, imagen.posY, imagen.nombre);
+            scene.customObjects.player.setBounce(0.2);
+            scene.customObjects.player.setCollideWorldBounds(true);
+            // @ts-ignore
+            imagen.animaciones
+              .forEach(
+                (animacion: AnimationConfig | any) => {
+                  console.log(animacion)
+                  scene.anims.create({
+                    key: animacion.key,
+                    frames: animacion.frames(scene, imagen),
+                    frameRate: animacion.frameRate,
+                    repeat: animacion.repeat
+                  });
+                });
 
           }
         }
@@ -251,15 +390,24 @@ function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene, 
 interface AnadirImagenInterface {
   nombre?: string;
   url?: string;
+  urlNombreArchivo?: string;
   posX?: number;
   posY?: number;
   sizeX?: number;
   sizeY?: number;
   index?: number;
-  tipo?: 'imagen' | 'tileset';
+  bounce?: number;
+  frameWidth?: number;
+  frameHeight?: number;
+  nombreLayer?: string;
+  layerPositions?: LayerPosition[];
+  collideWorldBounds?: boolean;
+  tipo?: 'imagen' | 'tileset' | 'player';
   level?: Array<number[]>;
-  nombreMapaCSV?: string;
+  nombreMapa?: string;
   levelCSV?: string;
+  levelJSON?: string;
+  animaciones?: AnimationConfig[] | any[];
 }
 
 function resize(component: AppComponent) {
@@ -278,6 +426,27 @@ function resize(component: AppComponent) {
     }
     component.top = (height - Number((canvas.style.height).replace('px', ''))) / 2
   }
+}
+
+interface CustomObjects {
+  customObjects: CustomObjectsProperties
+}
+
+interface CustomObjectsProperties {
+  player?: Phaser.Physics.Arcade.Sprite;
+  cursors?: CursorKeys
+  layer?: Layers[]
+}
+
+interface Layers {
+  nombre: string;
+  layer: Phaser.Tilemaps.StaticTilemapLayer[]
+}
+
+interface LayerPosition {
+  nombre: string;
+  posX: number;
+  posY: number;
 }
 
 // function anadirPlayer(scene: Phaser.Scene | any) {
@@ -328,3 +497,4 @@ function resize(component: AppComponent) {
 // }
 //
 //
+
