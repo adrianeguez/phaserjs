@@ -1,36 +1,49 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 
+// @ts-ignore
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'juego';
   imagenes: AnadirImagenInterface[] = [
     {
+      tipo: 'imagen',
       nombre: 'star',
       url: 'assets/star.png',
       posX: 150,
+      posY: 200,
+    },
+    {
+      tipo: 'tileset',
+      nombre: 'tileset',
+      nombreMapaCSV: 'tileset',
+      url: 'assets/t1.png',
+      posX: 0,
+      posY: 0,
+      sizeX: 16,
+      sizeY: 16,
+      index: 0,
+      levelCSV: 'assets/mundos/01.csv',
+      // level: [
+      //   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11],
+      //   [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+      //   [22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+      //
+      // ]
+    },
+    {
+      tipo: 'imagen',
+      nombre: 'bomb',
+      url: 'assets/bomb.png',
+      posX: 200,
       posY: 200
     },
     {
-
-      nombre: 'tileset',
-      url: 'assets/t1.png',
-      posX: 300,
-      posY: 400
-    },
-    {
-
-      nombre: 'bomb',
-      url: 'assets/bomb.png',
-      posX: 0,
-      posY: 0
-    },
-    {
-
+      tipo: 'imagen',
       nombre: 'dude',
       url: 'assets/dude.png',
       posX: 0,
@@ -38,13 +51,18 @@ export class AppComponent {
     }
   ];
   config = {
+    parent: 'juego',
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 640,
+    height: 320,
+    pixelArt: true,
+    zoom: 4,
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: {y: 300},
+        gravity: {
+          y: 300
+        },
         debug: false
       }
     },
@@ -54,8 +72,29 @@ export class AppComponent {
       update: update(this)
     }
   };
-  game = new Phaser.Game(this.config);
+  game: Phaser.Game;
+  top = 10;
+  bottom = 10;
 
+  constructor() {
+
+  }
+
+  ngOnInit(): void {
+    this.game = new Phaser.Game(this.config);
+    this.escucharCambiosEnPantalla();
+
+  }
+
+  escucharCambiosEnPantalla() {
+    setTimeout(
+      () => {
+        resize(this)();
+        window.addEventListener("resize", resize(this), false)
+      },
+      1
+    );
+  }
 }
 
 
@@ -78,10 +117,12 @@ function preload(componente: AppComponent) {
   }
 }
 
+
 function create(componente: AppComponent) {
   return function () {
     const scene: Phaser.Scene | any = this;
     anadirImagenes(componente.imagenes, scene, 'add');
+    console.log(scene);
 
     // establecerBackground(scene);
     // const platforms = crearPlatform(scene);
@@ -166,32 +207,78 @@ function update(componente: AppComponent) {
 }
 
 function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene, tipo: 'load' | 'add' = 'load') {
+
   if (tipo === 'load') {
     imagenes
       .forEach(
         (imagen) => {
           scene.load.image(imagen.nombre, imagen.url);
+          if (imagen.levelCSV) {
+            scene.load.tilemapCSV(imagen.nombreMapaCSV, imagen.levelCSV);
+          }
         }
       );
   }
-
   if (tipo === 'add') {
     imagenes
       .forEach(
         (imagen) => {
-          scene.add.image(imagen.posX, imagen.posY, imagen.nombre);
+          if (imagen.tipo === 'imagen') {
+            scene.add.image(imagen.posX, imagen.posY, imagen.nombre);
+          }
+          if (imagen.tipo === 'tileset') {
+            const configTileMap: TilemapConfig = {
+              tileWidth: imagen.sizeX,
+              tileHeight: imagen.sizeY,
+            };
+            if (imagen.level) {
+              configTileMap.data = imagen.level;
+            }
+            if (imagen.levelCSV) {
+              configTileMap.key = imagen.nombreMapaCSV
+            }
+            const map = scene.make.tilemap(configTileMap);
+            const tiles = map.addTilesetImage(imagen.nombre);
+            const layer = map.createStaticLayer(imagen.index, tiles, imagen.posX, imagen.posY);
+
+
+          }
         }
       );
   }
 }
 
 interface AnadirImagenInterface {
-  nombre: string;
-  url: string;
-  posX: number;
-  posY: number;
+  nombre?: string;
+  url?: string;
+  posX?: number;
+  posY?: number;
+  sizeX?: number;
+  sizeY?: number;
+  index?: number;
+  tipo?: 'imagen' | 'tileset';
+  level?: Array<number[]>;
+  nombreMapaCSV?: string;
+  levelCSV?: string;
 }
 
+function resize(component: AppComponent) {
+  return function () {
+    let canvas = document.querySelector("canvas");
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let wratio = width / height;
+    let ratio = component.config.width / component.config.height;
+    if (wratio < ratio) {
+      canvas.style.width = width + "px";
+      canvas.style.height = (width / ratio) + "px";
+    } else {
+      canvas.style.width = (height * ratio) + "px";
+      canvas.style.height = height + "px";
+    }
+    component.top = (height - Number((canvas.style.height).replace('px', ''))) / 2
+  }
+}
 
 // function anadirPlayer(scene: Phaser.Scene | any) {
 //   const player = scene.physics.add.sprite(100, 450, 'dude');
