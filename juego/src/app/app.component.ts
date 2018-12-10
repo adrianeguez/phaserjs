@@ -33,20 +33,21 @@ export class AppComponent implements OnInit {
       // levelCSV: 'assets/mundos/01.csv',
       levelJSON: 'assets/mundos/01.json',
       layerPositions: [
-        {
-          nombre: 'Frente',
-          posX: 0,
-          posY: 0,
-        },
+        // {
+        //   nombre: 'Frente',
+        //   posX: 0,
+        //   posY: 0,
+        // },
         {
           nombre: 'Mundo',
           posX: 0,
           posY: 0,
-        }, {
-          nombre: 'Fondo',
-          posX: 0,
-          posY: 0,
-        },
+        }
+        // , {
+        //   nombre: 'Fondo',
+        //   posX: 0,
+        //   posY: 0,
+        // },
 
       ]
 
@@ -158,10 +159,11 @@ export class AppComponent implements OnInit {
 
 function preload(componente: AppComponent) {
   return function () {
-    const scene: Phaser.Scene | any = this;
+    const scene: Phaser.Scene | CustomObjects | any = this;
     anadirImagenes(componente.imagenes, scene);
     scene.customObjects = {};
     scene.customObjects.layer = [];
+    scene.customObjects.groups = [];
 
     // // contexto.load.setBaseURL('http://labs.phaser.io');
 
@@ -182,10 +184,28 @@ function create(componente: AppComponent) {
     const scene: Phaser.Scene | any | CustomObjects = this;
     anadirImagenes(componente.imagenes, scene, 'add');
     scene.customObjects.cursors = scene.input.keyboard.createCursorKeys();
-    console.log(scene.customObjects.layer)
     const mundo = scene.customObjects.layer.find((l) => l.nombre === 'Mundo');
-    console.log(mundo);
     scene.physics.add.collider(scene.customObjects.player, mundo.layer);
+    scene.customObjects.groups.push(
+      {
+        group: scene.physics.add.staticGroup(),
+        nombre: 'spike',
+      }
+    );
+    const spikeGroup = scene.customObjects.groups.find((g) => g.nombre === 'spike').group;
+    mundo.layer
+      .forEachTile(
+        (tile) => {
+          console.log(tile.index)
+          if (tile.index === 40) {
+            const spike = spikeGroup.create(tile.getCenterX(), tile.getCenterY(), "spike");
+            if (spike.angle === 0) spike.body.setSize(32, 6).setOffset(0, 26);
+            else if (spike.angle === -90) spike.body.setSize(6, 32).setOffset(26, 0);
+            else if (spike.angle === 90) spike.body.setSize(6, 32).setOffset(0, 0);
+            console.log(spike.angle)
+          }
+        }
+      );
     // scene.physics.add.collider(scene.customObjects.player, scene.customObjects.layer.find((l) => l.name === 'mapa'));
     // establecerBackground(scene);
     // const platforms = crearPlatform(scene);
@@ -225,10 +245,17 @@ function update(componente: AppComponent) {
       scene.customObjects.player.setVelocityX(0);
       scene.customObjects.player.anims.play('turn');
     }
-  console.log(scene.customObjects.player);
-    if (scene.customObjects.cursors.up.isDown  && scene.customObjects.player.body.blocked.down) {
+    if (scene.customObjects.cursors.up.isDown && scene.customObjects.player.body.blocked.down) {
       scene.customObjects.player.setVelocityY(-100);
     }
+    const p = scene.customObjects.player
+    const pene = scene.customObjects.groups.find(f => f.nombre === 'spike').group
+    // if (
+    //
+    //   scene.physics.world.overlap(, )
+    // ) {
+      console.log('Teta',p, pene)
+    // }
     //   const cursors = this.input.keyboard.createCursorKeys();
     //   const player: Phaser.Physics.Arcade.Sprite = scene.player;
     //   scene.input.on(
@@ -331,7 +358,6 @@ function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene |
             }
             if (imagen.levelJSON) {
               configTileMap.key = imagen.nombreMapa;
-              console.log('configTileMap', configTileMap);
             }
             // const tileset = map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
             //
@@ -372,7 +398,6 @@ function anadirImagenes(imagenes: AnadirImagenInterface[], scene: Phaser.Scene |
             imagen.animaciones
               .forEach(
                 (animacion: AnimationConfig | any) => {
-                  console.log(animacion)
                   scene.anims.create({
                     key: animacion.key,
                     frames: animacion.frames(scene, imagen),
@@ -434,13 +459,19 @@ interface CustomObjects {
 
 interface CustomObjectsProperties {
   player?: Phaser.Physics.Arcade.Sprite;
-  cursors?: CursorKeys
-  layer?: Layers[]
+  cursors?: CursorKeys;
+  layer?: Layers[];
+  groups?: GroupStaticGroup[];
 }
 
 interface Layers {
   nombre: string;
   layer: Phaser.Tilemaps.StaticTilemapLayer[]
+}
+
+interface GroupStaticGroup {
+  group: Phaser.Physics.Arcade.StaticGroup;
+  nombre: string;
 }
 
 interface LayerPosition {
