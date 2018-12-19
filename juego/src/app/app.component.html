@@ -1,7 +1,16 @@
-<div class="contenedor" [style.margin-top]="top+'px'">
+<div class="contenedor" [style.margin-top]="top+'px'" *ngIf="personajeSeleccionado">
   <div id="juego" style="width: 100%;">
   </div>
 </div>
-
+<div *ngIf="!personajeSeleccionado">
+  <br>
+  <img width="200px" height="200px" [src]="'assets/N'+nombrePersonaje+'.PNG'" alt="">
+  <br>
+  <select name="personaje" id="" (change)="seleccionarPersonaje($event)">
+    <option  [value]="personaje" *ngFor="let personaje of personajes">{{personaje}}</option>
+  </select>
+  <br>
+  <button (click)="establecerPersonaje(nombrePersonaje)">Aceptar</button>
+</div>
 
 <router-outlet></router-outlet>

@@ -10,6 +10,21 @@ import CursorKeys = Phaser.Input.Keyboard.CursorKeys;
 })
 export class AppComponent implements OnInit {
   title = 'juego';
+  personajeSeleccionado = false;
+  nombrePersonaje = 'cristianlara';
+  personajes = [
+    'cristianlara',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+  ];
   imagenes: AnadirImagenInterface[] = [
     {
       tipo: 'imagen',
@@ -21,8 +36,8 @@ export class AppComponent implements OnInit {
     {
       tipo: 'tileset',
       nombre: 'tileset',
-      nombreLayer: 'mapaLayer',
-      nombreMapa: 'mapa',
+      nombreLayer: 'map',
+      nombreMapa: 'map',
       url: 'assets/mundos/t1.png',
       urlNombreArchivo: 't1',
       posX: 0,
@@ -31,7 +46,7 @@ export class AppComponent implements OnInit {
       sizeY: 16,
       index: 0,
       // levelCSV: 'assets/mundos/01.csv',
-      levelJSON: 'assets/mundos/01.json',
+      levelJSON: 'assets/mundos/02.json',
       layerPositions: [
         // {
         //   nombre: 'Frente',
@@ -39,7 +54,7 @@ export class AppComponent implements OnInit {
         //   posY: 0,
         // },
         {
-          nombre: 'Mundo',
+          nombre: 'map',
           posX: 0,
           posY: 0,
         }
@@ -68,9 +83,9 @@ export class AppComponent implements OnInit {
     {
       tipo: 'player',
       nombre: 'dude',
-      url: 'assets/dude.png',
+      url: 'assets/dude3.png',
       posX: 100,
-      posY: 100,
+      posY: 550,
       frameWidth: 32,
       frameHeight: 48,
       bounce: 0.2,
@@ -110,12 +125,13 @@ export class AppComponent implements OnInit {
     }
   ];
   config = {
+    backgroundColor: '#422835',
     parent: 'juego',
     type: Phaser.AUTO,
-    width: 640,
-    height: 320,
+    width: 800,
+    height: 600,
     pixelArt: true,
-    zoom: 4,
+    // zoom: 4,
     physics: {
       default: 'arcade',
       arcade: {
@@ -131,7 +147,7 @@ export class AppComponent implements OnInit {
       update: update(this)
     }
   };
-  game: Phaser.Game;
+  game: Phaser.Game | any;
   top = 10;
   bottom = 10;
 
@@ -140,9 +156,33 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.game = new Phaser.Game(this.config);
-    this.escucharCambiosEnPantalla();
 
+
+  }
+
+  empezarJuego() {
+    setTimeout(
+      ()=>{
+        this.game = new Phaser.Game(this.config);
+        this.escucharCambiosEnPantalla();
+      },1
+    );
+
+  }
+
+  seleccionarPersonaje(evento) {
+    this.nombrePersonaje = evento.target.value;
+  }
+
+  establecerPersonaje(personaje) {
+    const indicePlayer = this.imagenes
+      .findIndex((imagen) => imagen.tipo === 'player');
+    console.log(indicePlayer);
+    this.imagenes[indicePlayer].url = `assets/${personaje}.png`;
+    this.personajeSeleccionado = true;
+    console.log(this.imagenes[indicePlayer]);
+
+    this.empezarJuego();
   }
 
   escucharCambiosEnPantalla() {
@@ -184,7 +224,7 @@ function create(componente: AppComponent) {
     const scene: Phaser.Scene | any | CustomObjects = this;
     anadirImagenes(componente.imagenes, scene, 'add');
     scene.customObjects.cursors = scene.input.keyboard.createCursorKeys();
-    const mundo = scene.customObjects.layer.find((l) => l.nombre === 'Mundo');
+    const mundo = scene.customObjects.layer.find((l) => l.nombre === 'map');
     scene.physics.add.collider(scene.customObjects.player, mundo.layer);
     scene.customObjects.groups.push(
       {
@@ -196,14 +236,7 @@ function create(componente: AppComponent) {
     mundo.layer
       .forEachTile(
         (tile) => {
-          console.log(tile.index)
-          if (tile.index === 40) {
-            const spike = spikeGroup.create(tile.getCenterX(), tile.getCenterY(), "spike");
-            if (spike.angle === 0) spike.body.setSize(32, 6).setOffset(0, 26);
-            else if (spike.angle === -90) spike.body.setSize(6, 32).setOffset(26, 0);
-            else if (spike.angle === 90) spike.body.setSize(6, 32).setOffset(0, 0);
-            console.log(spike.angle)
-          }
+
         }
       );
     // scene.physics.add.collider(scene.customObjects.player, scene.customObjects.layer.find((l) => l.name === 'mapa'));
@@ -235,10 +268,10 @@ function update(componente: AppComponent) {
     const scene: Phaser.Scene | any | CustomObjects = this;
 
     if (scene.customObjects.cursors.left.isDown) {
-      scene.customObjects.player.setVelocityX(-100);
+      scene.customObjects.player.setVelocityX(-70);
       scene.customObjects.player.anims.play('left', true);
     } else if (scene.customObjects.cursors.right.isDown) {
-      scene.customObjects.player.setVelocityX(100);
+      scene.customObjects.player.setVelocityX(70);
 
       scene.customObjects.player.anims.play('right', true);
     } else {
@@ -246,15 +279,14 @@ function update(componente: AppComponent) {
       scene.customObjects.player.anims.play('turn');
     }
     if (scene.customObjects.cursors.up.isDown && scene.customObjects.player.body.blocked.down) {
-      scene.customObjects.player.setVelocityY(-100);
+      scene.customObjects.player.setVelocityY(-150);
     }
-    const p = scene.customObjects.player
-    const pene = scene.customObjects.groups.find(f => f.nombre === 'spike').group
+    // const p = scene.customObjects.player
+    // const pene = scene.customObjects.groups.find(f => f.nombre === 'spike').group
     // if (
     //
     //   scene.physics.world.overlap(, )
     // ) {
-      console.log('Teta',p, pene)
     // }
     //   const cursors = this.input.keyboard.createCursorKeys();
     //   const player: Phaser.Physics.Arcade.Sprite = scene.player;
