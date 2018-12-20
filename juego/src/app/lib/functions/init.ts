@@ -5,4 +5,5 @@ export function initCustomObjects(scene: Phaser.Scene | CustomObjects | any) {
   scene.customObjects.layer = [];
   scene.customObjects.groups = [];
   scene.customObjects.sounds = [];
+  scene.customObjects.repeatGroups = [];
 }

@@ -1,4 +1,5 @@
 import {CustomObjects} from '../../interfaces/custom-objects';
+import {AnadirImagenInterface} from "../../interfaces/anadir-imagen";
 
 export function anadirImagenes(imagenes: AnadirImagenInterface[],
                                scene: Phaser.Scene | any | CustomObjects,
@@ -7,7 +8,7 @@ export function anadirImagenes(imagenes: AnadirImagenInterface[],
     imagenes
       .forEach(
         (imagen) => {
-          if (imagen.tipo === 'imagen' || imagen.tipo === 'tileset') {
+          if (imagen.tipo === 'imagen' || imagen.tipo === 'tileset' || imagen.tipo === 'repeat') {
             scene.load.image(imagen.nombre, imagen.url);
             if (imagen.levelCSV) {
               scene.load.tilemapCSV(imagen.nombreMapa, imagen.levelJSON);
@@ -88,6 +89,29 @@ export function anadirImagenes(imagenes: AnadirImagenInterface[],
                     repeat: animacion.repeat
                   });
                 });
+
+          }
+          if (imagen.tipo === 'repeat') {
+            scene.customObjects.repeatGroups.push({
+              nombre: imagen.nombre,
+              grupo: []
+            });
+            imagen.imagenRepeat
+              .forEach(
+                (repeat) => {
+                  const grupo = scene.physics.add.group({
+                    key: imagen.nombre,
+                    repeat: repeat.repeat,
+                    setXY: {x: repeat.posX, y: repeat.posY, stepX: repeat.stepX, stepY: repeat.stepY}
+                  });
+                  grupo.children.iterate(function (child) {
+                    child.setBounceY(Phaser.Math.FloatBetween(repeat.floatBetween.min, repeat.floatBetween.max));
+                  });
+                  const indiceGrupo = scene.customObjects.repeatGroups.findIndex(n => n.nombre === imagen.nombre);
+                  scene.customObjects.repeatGroups[indiceGrupo].grupo.push(grupo);
+
+                }
+              );
 
           }
         }

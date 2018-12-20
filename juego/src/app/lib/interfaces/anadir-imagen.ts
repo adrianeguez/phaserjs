@@ -1,9 +1,13 @@
-interface AnadirImagenInterface {
+import {ImagenRepeat} from "./imagen-repeat";
+
+export interface AnadirImagenInterface {
   nombre?: string;
   url?: string;
   urlNombreArchivo?: string;
   posX?: number;
   posY?: number;
+  stepX?: number;
+  imagenRepeat?: ImagenRepeat[];
   sizeX?: number;
   sizeY?: number;
   index?: number;
@@ -13,7 +17,7 @@ interface AnadirImagenInterface {
   nombreLayer?: string;
   layerPositions?: LayerPosition[];
   collideWorldBounds?: boolean;
-  tipo?: 'imagen' | 'tileset' | 'player';
+  tipo?: 'imagen' | 'tileset' | 'player' | 'repeat';
   level?: Array<number[]>;
   nombreMapa?: string;
   levelCSV?: string;

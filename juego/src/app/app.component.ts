@@ -5,6 +5,7 @@ import {anadirImagenes} from './lib/functions/images/anadir-imagen';
 import {AnadirSonidos} from './lib/interfaces/anadir-sonidos';
 import {anadirSonido} from './lib/functions/sound/anadir-sonido';
 import {initCustomObjects} from './lib/functions/init';
+import {AnadirImagenInterface} from "./lib/interfaces/anadir-imagen";
 
 @Component({
   selector: 'app-root',
@@ -27,15 +28,12 @@ export class AppComponent implements OnInit {
     'cristian-jumbo',
     'choco',
     'alexander-ninio',
+    'anali',
+    'vinicio',
+    'pao'
   ];
   imagenes: AnadirImagenInterface[] = [
-    {
-      tipo: 'imagen',
-      nombre: 'star',
-      url: 'assets/star.png',
-      posX: 150,
-      posY: 200,
-    },
+
     {
       tipo: 'tileset',
       nombre: 'tileset',
@@ -125,7 +123,35 @@ export class AppComponent implements OnInit {
         },
 
       ]
-    }
+    },
+    {
+      tipo: 'repeat',
+      nombre: 'star',
+      url: 'assets/star.png',
+      imagenRepeat: [
+        {
+          posX: 300,
+          posY: 550,
+          stepX: 35,
+          repeat: 10,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 300,
+          posY: 450,
+          stepX: 35,
+          repeat: 10,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        }
+      ]
+
+    },
   ];
 
   sonidos: AnadirSonidos[] = [
@@ -225,15 +251,27 @@ function create(componente: AppComponent) {
     const scene: Phaser.Scene | any | CustomObjects = this;
     anadirImagenes(componente.imagenes, scene, 'add');
     anadirSonido(componente.sonidos, scene, 'create');
-    console.log(componente.nombrePersonaje)
-    console.log(scene.customObjects.sounds.find(s => s.nombre === componente.nombrePersonaje))
     const cancionFondo = scene.customObjects.sounds.find(s => s.nombre === componente.nombrePersonaje).sonido;
     cancionFondo.play();
 
+    // scene.physics.add.collider(player, platforms);
+    // scene.physics.add.collider(stars, platforms);
+    //
+    // scene.physics.add.overlap(player, stars, collectStar, null, this);
 
     scene.customObjects.cursors = scene.input.keyboard.createCursorKeys();
     const mundo = scene.customObjects.layer.find((l) => l.nombre === 'map');
-    scene.physics.add.collider(scene.customObjects.player, mundo.layer);
+    const player = scene.customObjects.player;
+    const estrellas = scene.customObjects.repeatGroups.find(n => n.nombre === 'star');
+
+    scene.physics.add.collider(player, mundo.layer);
+    estrellas.grupo.forEach(
+      (unidad) => {
+        scene.physics.add.collider(unidad, mundo.layer);
+        scene.physics.add.overlap(player, unidad, collectStar, null, this);
+      }
+    );
+    scene.physics.add.collider(player, mundo.layer);
     scene.customObjects.groups.push(
       {
         group: scene.physics.add.staticGroup(),
@@ -248,6 +286,10 @@ function create(componente: AppComponent) {
         }
       );
   };
+}
+
+function collectStar(player, star) {
+  star.disableBody(true, true);
 }
 
 function update(componente: AppComponent) {

@@ -49499,6 +49499,7 @@ declare namespace Phaser {
          */
         sprite(x: number, y: number, key: string, frame?: string | integer): Phaser.Physics.Arcade.Sprite;
 
+
         /**
          * Creates a Static Physics Group object.
          * All Game Objects created by this Group will automatically be static Arcade Physics objects.
@@ -49521,7 +49522,8 @@ declare namespace Phaser {
         destroy(): void;
 
       }
-
+      
+      
       /**
        * [description]
        * @param body1 [description]
