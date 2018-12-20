@@ -15880,6 +15880,8 @@ declare namespace Phaser {
        */
       image(x: number, y: number, texture: string, frame?: string | integer): Phaser.GameObjects.Image;
 
+
+      
       /**
        * Creates a new Mesh Game Object and adds it to the Scene.
        *
