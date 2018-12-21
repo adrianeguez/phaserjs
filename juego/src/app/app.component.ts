@@ -35,7 +35,6 @@ export class AppComponent implements OnInit {
     'pao'
   ];
   imagenes: AnadirImagenInterface[] = [
-
     {
       tipo: 'tileset',
       nombre: 'tileset',
@@ -77,18 +76,11 @@ export class AppComponent implements OnInit {
       // ]
     },
     {
-      tipo: 'imagen',
-      nombre: 'bomb',
-      url: 'assets/bomb.png',
-      posX: 200,
-      posY: 200
-    },
-    {
       tipo: 'player',
       nombre: 'dude',
       url: 'assets/dude3.png',
-      posX: 100,
-      posY: 550,
+      posX: 120,
+      posY: 560,
       frameWidth: 32,
       frameHeight: 48,
       bounce: 0.2,
@@ -142,27 +134,215 @@ export class AppComponent implements OnInit {
           }
         },
         {
-          posX: 300,
+          posX: 220,
           posY: 450,
           stepX: 35,
-          repeat: 10,
+          repeat: 15,
           floatBetween: {
             min: 0.4,
             max: 0.8
           }
-        }
+        },
+        {
+          posX: 45,
+          posY: 360,
+          stepX: 35,
+          repeat: 22,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 45,
+          posY: 280,
+          stepX: 35,
+          repeat: 4,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 200,
+          posY: 260,
+          stepX: 35,
+          repeat: 18,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 25,
+          posY: 180,
+          stepX: 35,
+          repeat: 22,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 25,
+          posY: 35,
+          stepX: 35,
+          repeat: 22,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 45,
+          posY: 520,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
       ]
 
+    },
+    {
+      tipo: 'repeat',
+      nombre: 'bomb',
+      url: 'assets/bomb.png',
+      imagenRepeat: [
+        {
+          posX: 70,
+          posY: 550,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 590,
+          posY: 310,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 640,
+          posY: 170,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 650,
+          posY: 70,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 160,
+          posY: 70,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 130,
+          posY: 500,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 50,
+          posY: 520,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+        {
+          posX: 39,
+          posY: 70,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+      ]
+    },
+    {
+      tipo: 'repeat',
+      nombre: 'manti',
+      url: 'assets/manti.png',
+      imagenRepeat: [
+        {
+          posX: 10,
+          posY: 10,
+          stepX: 35,
+          repeat: 0,
+          floatBetween: {
+            min: 0.4,
+            max: 0.8
+          }
+        },
+      ]
     },
   ];
   textos: AnadirTexto[] = [
     {
       name: 'score',
       fontSize: '16px',
-      posX: 660,
+      posX: 630,
       posY: 10,
-      text: 'Score : 0',
+      text: 'Puntuación : 0',
       color: '#ffffff'
+    },
+    {
+      name: 'tiempo',
+      fontSize: '16px',
+      posX: 630,
+      posY: 40,
+      text: 'Segundos : 0',
+      color: '#ffffff'
+    },
+    {
+      name: 'hit-bomb-text',
+      fontSize: '46px',
+      posX: 150,
+      posY: 300,
+      text: 'PERDISTE TUS PUNTOS',
+      color: '#ff0004'
+    },
+    {
+      name: 'collect-manti',
+      fontSize: '36px',
+      posX: 150,
+      posY: 100,
+      text: 'Consigue el ultimo Manti',
+      color: '#fff92a'
     }
   ];
   sonidos: AnadirSonidos[] = [
@@ -170,6 +350,26 @@ export class AppComponent implements OnInit {
       nombre: 'cristian-lara',
       audios: ['assets/music/cristian-lara.mp3'],
       loop: true,
+    },
+    {
+      nombre: 'hit-bomb',
+      audios: ['assets/music/hit-bomb.mp3'],
+      loop: false,
+    },
+    {
+      nombre: 'collect-star',
+      audios: ['assets/music/collect-star.mp3'],
+      loop: false,
+    },
+    {
+      nombre: 'manti',
+      audios: ['assets/music/manti.mp3'],
+      loop: false,
+    },
+    {
+      nombre: 'win',
+      audios: ['assets/music/win.mp3'],
+      loop: false,
     }
   ];
   config = {
@@ -260,9 +460,17 @@ function preload(componente: AppComponent) {
 function create(componente: AppComponent) {
   return function () {
     const scene: Phaser.Scene | any | CustomObjects = this;
+    calcularTiempo(scene);
     anadirImagenes(componente.imagenes, scene, 'add');
     anadirSonido(componente.sonidos, scene, 'create');
     anadirTexto(componente.textos, scene);
+    const textoHitBomb = scene.customObjects.texts.find(t => t.nombre === 'hit-bomb-text');
+    textoHitBomb.texto.setVisible(false);
+
+    const textoManti = scene.customObjects.texts.find(t => t.nombre === 'collect-manti');
+    textoManti.texto.setVisible(false);
+
+
     const cancionFondo = scene.customObjects.sounds.find(s => s.nombre === componente.nombrePersonaje).sonido;
     cancionFondo.play();
 
@@ -275,12 +483,27 @@ function create(componente: AppComponent) {
     const mundo = scene.customObjects.layer.find((l) => l.nombre === 'map');
     const player = scene.customObjects.player;
     const estrellas = scene.customObjects.repeatGroups.find(n => n.nombre === 'star');
+    const bombas = scene.customObjects.repeatGroups.find(n => n.nombre === 'bomb');
+    const mantis = scene.customObjects.repeatGroups.find(n => n.nombre === 'manti');
 
     scene.physics.add.collider(player, mundo.layer);
     estrellas.grupo.forEach(
       (estrella) => {
         scene.physics.add.collider(estrella, mundo.layer);
         scene.physics.add.overlap(player, estrella, collectStar, null, this);
+      }
+    );
+    bombas.grupo.forEach(
+      (bomba) => {
+        scene.physics.add.collider(bomba, mundo.layer);
+        scene.physics.add.overlap(player, bomba, chocarBomba, null, this);
+      }
+    );
+
+    mantis.grupo.forEach(
+      (manti) => {
+        scene.physics.add.collider(manti, mundo.layer);
+        scene.physics.add.overlap(player, manti, coleccionarManti, null, this);
       }
     );
     scene.physics.add.collider(player, mundo.layer);
@@ -302,16 +525,23 @@ function create(componente: AppComponent) {
 
 function collectStar(player, star) {
   const scene: Phaser.Scene | any | CustomObjects = this;
+  const audioHitBombo = scene.customObjects.sounds.find(s => s.nombre === 'collect-star').sonido;
+  audioHitBombo.play();
   star.disableBody(true, true);
   scene.customObjects.score.points += 1;
   const textoScore = scene.customObjects.texts.find(t => t.nombre === 'score');
-  textoScore.texto.setText(`Score : ${scene.customObjects.score.points}`);
+  textoScore.texto.setText(`Puntuación : ${scene.customObjects.score.points}`);
 
 }
 
 function update(componente: AppComponent) {
   return function () {
     const scene: Phaser.Scene | any | CustomObjects = this;
+
+    if (!scene.customObjects.score.terminoJuego) {
+      const textoTiempo = scene.customObjects.texts.find(t => t.nombre === 'tiempo');
+      textoTiempo.texto.setText(`Segundos : ${scene.customObjects.score.segundos}`);
+    }
 
     if (scene.customObjects.cursors.left.isDown) {
       scene.customObjects.player.setVelocityX(-70);
@@ -329,6 +559,115 @@ function update(componente: AppComponent) {
     }
   };
 
+}
+
+function chocarBomba(player, bomba) {
+  const scene: Phaser.Scene | any | CustomObjects = this;
+  const audioHitBombo = scene.customObjects.sounds.find(s => s.nombre === 'hit-bomb').sonido;
+  audioHitBombo.play();
+  bomba.disableBody(true, true);
+  scene.customObjects.score.points = 0;
+
+  const textoHitBomb = scene.customObjects.texts.find(t => t.nombre === 'hit-bomb-text');
+  textoHitBomb.texto.setVisible(true);
+
+  player.setTint(0xff0000);
+  setTimeout(
+    () => {
+      player.clearTint();
+      setTimeout(
+        () => {
+          player.setTint(0xff0000);
+          setTimeout(
+            () => {
+              player.clearTint();
+              textoHitBomb.texto.setVisible(false);
+            }, 800
+          );
+        }, 500
+      );
+    }, 1000
+  );
+  const textoScore = scene.customObjects.texts.find(t => t.nombre === 'score');
+  textoScore.texto.setText(`Puntuación : ${scene.customObjects.score.points}`);
+}
+
+function coleccionarManti(player, manti) {
+  const scene: Phaser.Scene | any | CustomObjects = this;
+  if (scene.customObjects.obtuvoUltimoManti) {
+
+    manti.disableBody(true, true);
+    const textoManti = scene.customObjects.texts.find(t => t.nombre === 'collect-manti');
+    textoManti.texto.setText(`Puntos:${scene.customObjects.score.points}\n\nSegundos:${scene.customObjects.score.segundos}\n\nBien hecho!`);
+    textoManti.texto.setVisible(true);
+    scene.physics.pause();
+    scene.customObjects.sounds
+      .forEach(
+        (sound) => {
+          sound.sonido.stop();
+        }
+      );
+    scene.customObjects.score.terminoJuego = true;
+
+    const audioWin = scene.customObjects.sounds.find(s => s.nombre === 'win').sonido;
+    audioWin.play();
+  } else {
+    scene.customObjects.obtuvoUltimoManti = true;
+
+    const mundo = scene.customObjects.layer.find((l) => l.nombre === 'map');
+
+    // anadir manti
+    const grupo = scene.physics.add.group({
+      key: 'manti',
+      repeat: 0,
+      setXY: {x: 90, y: 560}
+    });
+    grupo.children.iterate(function (child) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.5));
+    });
+    scene.physics.add.collider(grupo, mundo.layer);
+    scene.physics.add.overlap(player, grupo, coleccionarManti, null, this);
+
+    // anadir bomba
+    const grupoBomba = scene.physics.add.group({
+      key: 'bomb',
+      repeat: 0,
+      setXY: {x: 120, y: 560}
+    });
+    grupoBomba.children.iterate(function (child) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.5));
+    });
+    scene.physics.add.collider(grupoBomba, mundo.layer);
+    scene.physics.add.overlap(player, grupoBomba, chocarBomba, null, this);
+
+
+    manti.disableBody(true, true);
+    const textoManti = scene.customObjects.texts.find(t => t.nombre === 'collect-manti');
+    textoManti.texto.setVisible(true);
+    scene.customObjects.sounds
+      .forEach(
+        (sound) => {
+          sound.sonido.stop();
+        }
+      );
+    const audioManti = scene.customObjects.sounds.find(s => s.nombre === 'manti').sonido;
+    audioManti.play();
+    setTimeout(
+      () => {
+        player.clearTint();
+        textoManti.texto.setVisible(false);
+      }, 5800
+    );
+  }
+
+}
+
+function calcularTiempo(scene: Phaser.Scene | any | CustomObjects) {
+  setTimeout(() => {
+      scene.customObjects.score.segundos += 1;
+      calcularTiempo(scene);
+    }, 1000
+  );
 }
 
 

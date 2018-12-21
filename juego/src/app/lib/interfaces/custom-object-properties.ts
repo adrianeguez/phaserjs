@@ -14,4 +14,5 @@ export interface CustomObjectsProperties {
   sounds: Sonido[];
   score: Score;
   texts: Texto[];
+  obtuvoUltimoManti: boolean;
 }

@@ -1,4 +1,4 @@
-import {ImagenRepeat} from "./imagen-repeat";
+import {ImagenRepeat} from './imagen-repeat';
 
 export interface AnadirImagenInterface {
   nombre?: string;
