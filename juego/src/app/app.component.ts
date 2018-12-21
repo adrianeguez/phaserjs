@@ -398,7 +398,7 @@ export class AppComponent implements OnInit {
       disableWebAudio: true
     }
   };
-  game: Phaser.Game | any;
+  game: Phaser.Game;
   top = 10;
   bottom = 10;
 
@@ -409,6 +409,49 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
 
 
+  }
+
+  reiniciar() {
+    this.personajeSeleccionado = !this.personajeSeleccionado;
+
+    this.nombrePersonaje = 'cristian-lara';
+    const scene: Phaser.Scene | any | CustomObjects = this.game.scene.scenes[0];
+    scene
+      .customObjects
+      .sounds
+      .forEach(
+        (sonido) => {
+          sonido.sonido.stop();
+        }
+      );
+    this.game.destroy(true);
+    this.game = undefined;
+    this.config = {
+      backgroundColor: '#422835',
+      parent: 'juego',
+      type: Phaser.AUTO,
+      width: 800,
+      height: 600,
+      pixelArt: true,
+      // zoom: 4,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: {
+            y: 300
+          },
+          debug: false
+        }
+      },
+      scene: {
+        preload: preload(this),
+        create: create(this),
+        update: update(this)
+      },
+      audio: {
+        disableWebAudio: true
+      }
+    }
   }
 
   empezarJuego() {
@@ -537,12 +580,10 @@ function collectStar(player, star) {
 function update(componente: AppComponent) {
   return function () {
     const scene: Phaser.Scene | any | CustomObjects = this;
-
     if (!scene.customObjects.score.terminoJuego) {
       const textoTiempo = scene.customObjects.texts.find(t => t.nombre === 'tiempo');
       textoTiempo.texto.setText(`Segundos : ${scene.customObjects.score.segundos}`);
     }
-
     if (scene.customObjects.cursors.left.isDown) {
       scene.customObjects.player.setVelocityX(-70);
       scene.customObjects.player.anims.play('left', true);

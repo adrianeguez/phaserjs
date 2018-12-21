@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@media (min-width: 1200px){
+  .container {
+    max-width: 1188px;
+  }
+}
+
+.container {
+  width: 100%;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+canvas{
+  border-style: solid;
+}

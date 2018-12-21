@@ -15881,7 +15881,7 @@ declare namespace Phaser {
       image(x: number, y: number, texture: string, frame?: string | integer): Phaser.GameObjects.Image;
 
 
-      
+
       /**
        * Creates a new Mesh Game Object and adds it to the Scene.
        *
@@ -18309,6 +18309,7 @@ declare namespace Phaser {
        * @param bottomRight The tint being applied to the bottom-right of the Game Object.
        */
       setTint(topLeft?: integer, topRight?: integer, bottomLeft?: integer, bottomRight?: integer): this;
+
 
       /**
        * Sets a fill-based tint on this Game Object.
@@ -49522,8 +49523,8 @@ declare namespace Phaser {
         destroy(): void;
 
       }
-      
-      
+
+
       /**
        * [description]
        * @param body1 [description]

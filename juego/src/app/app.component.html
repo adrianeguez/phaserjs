@@ -1,16 +1,34 @@
-<div class="contenedor" [style.margin-top]="top+'px'" *ngIf="personajeSeleccionado">
-  <div id="juego" style="width: 100%;">
+<div class="container">
+  <div class="contenedor" [style.margin-top]="top+'px'" *ngIf="personajeSeleccionado">
+    <button class="btn-block btn-danger" (click)="reiniciar()">Reiniciar</button>
+    <div id="juego" style="width: 100%;">
+    </div>
+  </div>
+  <br>
+  <br>
+  <div *ngIf="!personajeSeleccionado" class="jumbotron">
+    <h1 class="display-4">Selecciona tu personaje!</h1>
+    <p class="lead">Este es un pequeno demo de un juego sin fines de lucro, los sonidos e imágenes de este juego pertenecen a sus autores. Traido a ustedes gracias a
+      <a href="https://ideas.manticore-labs.com">Manticore-Labs</a>. Se utilizo como herramientas <a href="https://angular.io/">Angular</a> y <a
+        href="https://phaser.io/">Phaserjs</a></p>
+    <p>Colecciona las <strong>estrellas  </strong> <span><img src="assets/star.png" alt=""></span> y el <strong>Manti</strong> <span><img src="assets/manti.png" alt=""></span>, el que tenga más <strong>puntos</strong> y mejor <strong>tiempo</strong> gana!. Si tocas una <strong>bomba </strong> <span><img
+      src="assets/bomb.png" alt=""></span> tus puntos bajaran a 0!</p>
+    <br>
+    <div class="d-flex justify-content-center">
+      <img width="200px" height="200px" class="imagen-personaje" [src]="'assets/N'+nombrePersonaje+'.PNG'" alt="">
+    </div>
+
+    <br>
+
+    <div class="form-group">
+      <label for="personaje">Personaje</label>
+      <select id="personaje" class="form-control"  name="personaje" (change)="seleccionarPersonaje($event)">
+        <option  [value]="personaje" *ngFor="let personaje of personajes">{{personaje}}</option>
+      </select>
+    </div>
+
+    <br>
+    <button class="btn btn-primary btn-lg btn-block" (click)="establecerPersonaje(nombrePersonaje)">Aceptar</button>
   </div>
 </div>
-<div *ngIf="!personajeSeleccionado">
-  <br>
-  <img width="200px" height="200px" [src]="'assets/N'+nombrePersonaje+'.PNG'" alt="">
-  <br>
-  <select name="personaje" id="" (change)="seleccionarPersonaje($event)">
-    <option  [value]="personaje" *ngFor="let personaje of personajes">{{personaje}}</option>
-  </select>
-  <br>
-  <button (click)="establecerPersonaje(nombrePersonaje)">Aceptar</button>
-</div>
-
 <router-outlet></router-outlet>
