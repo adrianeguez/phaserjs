@@ -6,4 +6,6 @@ export function initCustomObjects(scene: Phaser.Scene | CustomObjects | any) {
   scene.customObjects.groups = [];
   scene.customObjects.sounds = [];
   scene.customObjects.repeatGroups = [];
+  scene.customObjects.texts = [];
+  scene.customObjects.score = {points: 0};
 }

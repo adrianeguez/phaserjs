@@ -5,7 +5,9 @@ import {anadirImagenes} from './lib/functions/images/anadir-imagen';
 import {AnadirSonidos} from './lib/interfaces/anadir-sonidos';
 import {anadirSonido} from './lib/functions/sound/anadir-sonido';
 import {initCustomObjects} from './lib/functions/init';
-import {AnadirImagenInterface} from "./lib/interfaces/anadir-imagen";
+import {AnadirImagenInterface} from './lib/interfaces/anadir-imagen';
+import {AnadirTexto} from './lib/interfaces/anadir-texto';
+import {anadirTexto} from './lib/functions/text/anadir-texto';
 
 @Component({
   selector: 'app-root',
@@ -153,7 +155,16 @@ export class AppComponent implements OnInit {
 
     },
   ];
-
+  textos: AnadirTexto[] = [
+    {
+      name: 'score',
+      fontSize: '16px',
+      posX: 660,
+      posY: 10,
+      text: 'Score : 0',
+      color: '#ffffff'
+    }
+  ];
   sonidos: AnadirSonidos[] = [
     {
       nombre: 'cristian-lara',
@@ -251,6 +262,7 @@ function create(componente: AppComponent) {
     const scene: Phaser.Scene | any | CustomObjects = this;
     anadirImagenes(componente.imagenes, scene, 'add');
     anadirSonido(componente.sonidos, scene, 'create');
+    anadirTexto(componente.textos, scene);
     const cancionFondo = scene.customObjects.sounds.find(s => s.nombre === componente.nombrePersonaje).sonido;
     cancionFondo.play();
 
@@ -266,9 +278,9 @@ function create(componente: AppComponent) {
 
     scene.physics.add.collider(player, mundo.layer);
     estrellas.grupo.forEach(
-      (unidad) => {
-        scene.physics.add.collider(unidad, mundo.layer);
-        scene.physics.add.overlap(player, unidad, collectStar, null, this);
+      (estrella) => {
+        scene.physics.add.collider(estrella, mundo.layer);
+        scene.physics.add.overlap(player, estrella, collectStar, null, this);
       }
     );
     scene.physics.add.collider(player, mundo.layer);
@@ -289,7 +301,12 @@ function create(componente: AppComponent) {
 }
 
 function collectStar(player, star) {
+  const scene: Phaser.Scene | any | CustomObjects = this;
   star.disableBody(true, true);
+  scene.customObjects.score.points += 1;
+  const textoScore = scene.customObjects.texts.find(t => t.nombre === 'score');
+  textoScore.texto.setText(`Score : ${scene.customObjects.score.points}`);
+
 }
 
 function update(componente: AppComponent) {
